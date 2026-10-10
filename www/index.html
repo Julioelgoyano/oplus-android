@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="app">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -151,6 +151,7 @@ dialog{width:94vw;padding:18px}
 @media(max-width:900px) and (orientation:landscape) and (max-height:520px){.screen{position:relative;margin:0;border-width:1px}}
 @media(prefers-reduced-motion:reduce){.spin,.tag.live::before{animation-duration:3s}}
 </style>
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
 <header>
@@ -248,7 +249,7 @@ async function loadRemote(){
 
 // Inicialización de Plyr
 const player = new Plyr('#v', {
-  controls: ['play-large', 'play', 'mute', 'volume', 'fullscreen'],
+  controls: ['play-large', 'play', 'mute', 'volume'],
   keyboard: { global: false } // Evita conflicto con los atajos personalizados ya existentes
 });
 // La lógica interactúa directamente con el elemento nativo mantenido por Plyr
@@ -326,7 +327,7 @@ v.addEventListener("waiting",()=>{if(!v.paused)overlay(true,"Cargando señal")})
 $("ov").onclick=()=>{if($("ovt").textContent.startsWith("Toca"))v.play()};
 $("qual").onchange=e=>{if(hls)hls.currentLevel=+e.target.value};
 $("prev").onclick=()=>play(cur-1); $("next").onclick=()=>play(cur+1);
-const fs=()=>document.fullscreenElement?document.exitFullscreen():document.querySelector(".screen").requestFullscreen?.();
+let fs=()=>document.fullscreenElement?document.exitFullscreen():document.querySelector(".screen").requestFullscreen?.();
 $("fs").onclick=fs;
 $("q").oninput=drawList;
 let numBuf="",numT=0;
@@ -665,5 +666,6 @@ const hc=decodeURIComponent((location.hash.match(/^#c=(.+)/)||[])[1]||""),last=s
 play(li>=0?li:0);
 });
 </script>
+<script src="app.js"></script>
 </body>
 </html>

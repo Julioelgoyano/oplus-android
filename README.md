@@ -8,3 +8,9 @@
 
 Para actualizar la app: cambia `www/index.html` en el repositorio y GitHub genera un APK nuevo solo.
 Los canales NO necesitan APK nuevo: se siguen administrando desde el panel.
+
+## Notas
+- La app va en vertical; solo gira a horizontal al usar el botón de pantalla completa (esquina del video).
+- Si cambias `appId` en `capacitor.config.json`, cambia también la línea `package` de los dos archivos de `native/`
+  y la carpeta destino en el paso "Código nativo" del workflow (`com/oplustv/app`).
+- `www/app.css` y `www/app.js` son la "piel" exclusiva de la app; la página web no los usa.
