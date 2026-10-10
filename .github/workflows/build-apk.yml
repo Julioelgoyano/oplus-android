@@ -29,10 +29,12 @@ jobs:
       - name: Generar íconos y pantalla de carga
         run: npx @capacitor/assets generate --android
 
-      - name: Permitir canales http:// dentro de la app
+      - name: Código nativo (pantalla completa real) y ajustes del manifiesto
         run: |
+          cp native/*.java android/app/src/main/java/com/oplustv/app/
           M=android/app/src/main/AndroidManifest.xml
           grep -q usesCleartextTraffic "$M" || sed -i 's/<application/<application android:usesCleartextTraffic="true"/' "$M"
+          grep -q screenOrientation "$M" || sed -i 's/<activity/<activity android:screenOrientation="portrait"/' "$M"
 
       - name: Copiar la página a la app
         run: npx cap sync android
