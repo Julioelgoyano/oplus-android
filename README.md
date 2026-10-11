@@ -14,3 +14,5 @@ Los canales NO necesitan APK nuevo: se siguen administrando desde el panel.
 - Si cambias `appId` en `capacitor.config.json`, cambia también la línea `package` de los dos archivos de `native/`
   y la carpeta destino en el paso "Código nativo" del workflow (`com/oplustv/app`).
 - `www/app.css` y `www/app.js` son la "piel" exclusiva de la app; la página web no los usa.
+- Las librerías del reproductor (hls.js, Plyr, mpegts.js) y la tipografía Poppins van DENTRO de la app (`www/vendor/`), así que
+  la app abre aunque el internet esté lento. Solo los canales, la lista (Firebase) y la guía necesitan conexión.

@@ -1,3 +1,7 @@
+@font-face{font-family:Poppins;font-weight:400;font-style:normal;font-display:swap;src:url(vendor/fonts/poppins-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:500;font-style:normal;font-display:swap;src:url(vendor/fonts/poppins-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:600;font-style:normal;font-display:swap;src:url(vendor/fonts/poppins-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Poppins;font-weight:700;font-style:normal;font-display:swap;src:url(vendor/fonts/poppins-latin-700-normal.woff2) format("woff2")}
 /* O-PLUS TV · piel exclusiva de la app (la página web NO usa este archivo) */
 html.app,html.app body{background:#050b12}
 html.app body{background:radial-gradient(700px 380px at 100% -5%,rgba(194,52,127,.16),transparent 60%),radial-gradient(600px 380px at -10% 15%,rgba(31,200,214,.13),transparent 60%),#050b12;padding-bottom:calc(74px + env(safe-area-inset-bottom))}
@@ -31,8 +35,8 @@ html.app body{background:radial-gradient(700px 380px at 100% -5%,rgba(194,52,127
 .app .ch[aria-current=true]{background:#0d1c2e;border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 10px 28px rgba(31,200,214,.25)}
 .app .ch[aria-current=true]::before{content:"EN VIVO";position:absolute;top:8px;left:8px;z-index:2;background:var(--mag);color:#fff;font:700 10px Poppins,sans-serif;letter-spacing:.5px;padding:2px 9px;border-radius:999px}
 .app .num{display:none}
-.app .logo{width:100%;height:98px;border-radius:0;font-size:28px}
-.app .logo img{padding:16px;background:transparent}
+.app .logo{position:relative;flex:none;overflow:hidden;width:100%;height:98px;border-radius:0;font-size:28px}
+.app .logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:16px;background:transparent;border-radius:24px}
 .app .nm{padding:10px 12px 12px}
 .app .nm b{font-size:14px}
 .app .fav{position:absolute;top:6px;right:6px;z-index:2;width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:50%;background:rgba(0,0,0,.4);font-size:16px}
@@ -48,11 +52,6 @@ body.fs-on #tabs{display:none}
 #appfs{position:absolute;top:10px;right:10px;z-index:6;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;backdrop-filter:blur(6px)}
 .screen.appfs{position:fixed!important;inset:0;z-index:5000;width:100vw!important;height:100vh!important;margin:0!important;border-radius:0!important;aspect-ratio:auto!important}
 .screen.appfs .plyr,.screen.appfs video{border-radius:0!important;height:100%}
-/* intro */
-#splash{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#050b12;transition:opacity .5s}
-#splash.out{opacity:0;pointer-events:none}
-#splash img{width:104px;height:104px;animation:pop .9s cubic-bezier(.2,1.4,.4,1)}
-#splash b{font:700 26px Poppins,sans-serif;letter-spacing:2px;color:#fff}
-#splash small{font:400 13px Poppins,sans-serif;color:#8da5ba;letter-spacing:.5px}
-.sp-ring{position:absolute;width:190px;height:190px;border-radius:50%;border:3px solid transparent;border-top-color:var(--cyan);border-right-color:var(--mag);animation:r 1.2s linear infinite;margin-top:-70px}
-@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+/* intro: el logo entra, hace zoom y el "+" se abre para revelar la app */
+#splash{position:fixed;inset:0;z-index:9000;overflow:hidden;pointer-events:all}
+#splash svg{position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;overflow:visible}

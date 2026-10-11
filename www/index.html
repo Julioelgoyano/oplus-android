@@ -9,12 +9,10 @@
 <link rel="icon" href="favicon-64.png" type="image/png" sizes="64x64">
 <link rel="icon" href="favicon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!-- Bibliotecas de HLS y Plyr integradas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.5.8/hls.min.js"></script>
-<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-<script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+<script src="vendor/hls.min.js"></script>
+<link rel="stylesheet" href="vendor/plyr.css" />
+<script src="vendor/plyr.js"></script>
 <style>
 :root{--bg:#060e17;--panel:#0d1c2e;--panel2:#112540;--line:#1d3550;--navy:#163959;--cyan:#1fc8d6;--mag:#c2347f;--txt:#eaf2f8;--mut:#8da5ba;color-scheme:dark;--plyr-color-main:var(--cyan)}
 *{box-sizing:border-box;margin:0}
@@ -224,7 +222,7 @@ let CHANNELS=[
 ];
 const $=id=>document.getElementById(id), dlog=[];
 // ---- Canales desde Firebase (Firestore: config/channels) ----
-let remoteOk=false,maint=false;
+let remoteOk=false,maint=false,remoteLate=false;
 const bypassMaint=/[?&]preview\b/.test(location.search);   // ?preview: el admin ve la página aunque esté en mantenimiento
 function setMaint(d){
   const on=!!(d&&d.maintenance)&&!bypassMaint;
@@ -244,11 +242,13 @@ async function loadRemote(){
     remoteOk=true;
     if(s.exists()&&Array.isArray(s.data().list)){CHANNELS=s.data().list;try{localStorage.setItem("op_cache",JSON.stringify(CHANNELS))}catch{}}
     else CHANNELS=[];
+    if(remoteLate){drawChips();drawList();if(cur<0)play(0)}   // llegó después del tiempo límite: actualiza la lista
   }catch(e){try{const c=JSON.parse(localStorage.getItem("op_cache"));if(c){CHANNELS=c;remoteOk=true}}catch{}}
 }
 
 // Inicialización de Plyr
 const player = new Plyr('#v', {
+  iconUrl: 'vendor/plyr.svg',
   controls: ['play-large', 'play', 'mute', 'volume'],
   keyboard: { global: false } // Evita conflicto con los atajos personalizados ya existentes
 });
@@ -571,7 +571,7 @@ async function go(c,tok,fail){
   v.src=c.u;v.onerror=()=>fail(why);v.play().catch(()=>{});
 }
 async function startTs(c,k,tok,fail,tries=0){
-  if(!window.mpegts&&!await loadScript(["https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.js","https://cdnjs.cloudflare.com/ajax/libs/mpegts.js/1.7.3/mpegts.min.js"])){D("mpegts.js: no se pudo descargar");if(tok===playTok)fail("No se pudo cargar el soporte para MPEG-TS (revisa tu conexión a internet).");return}
+  if(!window.mpegts&&!await loadScript(["vendor/mpegts.js"])){D("mpegts.js: no se pudo descargar");if(tok===playTok)fail("No se pudo cargar el soporte para MPEG-TS (revisa tu conexión a internet).");return}
   if(tok!==playTok)return;
   if(!mpegts.isSupported())return fail("Este navegador no soporta MPEG-TS.");
   if(!tries)D("mpegts.js: listo");
@@ -659,7 +659,9 @@ async function readEit(c,tok){
   clearTimeout(to);applyEit(c,out,tok);
 }
 
-loadRemote().then(()=>{drawChips();drawList();
+Promise.race([loadRemote(),new Promise(r=>setTimeout(()=>{   // si Firebase tarda más de 7 s, usa los últimos canales guardados
+  if(!remoteOk){remoteLate=true;try{const c=JSON.parse(localStorage.getItem("op_cache"));if(c){CHANNELS=c;remoteOk=true}}catch{}}
+  r()},7000))]).then(()=>{drawChips();drawList();
 if(!remoteOk)loadDemo();
 all().forEach(c=>loadXml(c.e));setInterval(()=>{xmlDone.clear();all().forEach(c=>loadXml(c.e))},3*3600000);
 const hc=decodeURIComponent((location.hash.match(/^#c=(.+)/)||[])[1]||""),last=store.get("op_last",null), li=hc?all().findIndex(c=>norm(c.id||c.n)===norm(hc)):all().findIndex(c=>c.u===last);

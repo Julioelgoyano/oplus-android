@@ -11,11 +11,34 @@ const IC={
 };
 document.documentElement.classList.add("app");
 
-// ---- Intro
-const sp=document.createElement("div");sp.id="splash";
-sp.innerHTML='<div class="sp-ring"></div><img src="icon-512.png" alt=""><b>O-PLUS TV</b><small>Tu tele, donde quieras</small>';
-document.body.append(sp);
-setTimeout(()=>{sp.classList.add("out");setTimeout(()=>sp.remove(),600)},1700);
+// ---- Intro: el logo entra desde la izquierda, hace zoom y el "+" se abre para revelar la app
+(()=>{
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const PLUS="M-4 -12h8v8h8v8h-8v8h-8v-8h-8v-8h8z";
+  const arc=(a,b,r)=>{const p=t=>[(r*Math.cos(t*Math.PI/180)).toFixed(2),(r*Math.sin(t*Math.PI/180)).toFixed(2)],[x1,y1]=p(a),[x2,y2]=p(b);return"M"+x1+" "+y1+"A"+r+" "+r+" 0 "+((b-a)>180?1:0)+" 1 "+x2+" "+y2};
+  const sp=document.createElement("div");sp.id="splash";
+  sp.innerHTML='<svg viewBox="-50 -50 100 100"><defs><mask id="spm" maskUnits="userSpaceOnUse" x="-5000" y="-5000" width="10000" height="10000"><rect x="-5000" y="-5000" width="10000" height="10000" fill="#fff"/><path d="'+PLUS+'" fill="#000"/></mask></defs>'
+   +'<g id="spz"><g mask="url(#spm)"><rect x="-5000" y="-5000" width="10000" height="10000" fill="#050b12"/><circle id="spn" r="31" fill="#163959"/><circle r="21" fill="#fff"/></g>'
+   +'<path id="spp" d="'+PLUS+'" fill="#fff" stroke="#163959" stroke-width=".7" stroke-linejoin="round"/>'
+   +'<g id="spr" fill="none" stroke-width="1.7" stroke-linecap="round"><path d="'+arc(180,311,38)+'" stroke="#1fc8d6"/><path d="'+arc(329,493,38)+'" stroke="#b03174"/></g></g></svg>';
+  document.body.append(sp);
+  const q=id=>sp.querySelector("#"+id),svg=sp.querySelector("svg"),z=q("spz"),rg=q("spr"),pl=q("spp"),nv=q("spn");
+  const E=Math.max(innerWidth/16,innerHeight/48)*1.25;          // zoom final: el "+" cubre toda la pantalla
+  const IN=.6,ZS=1.55,ZD=.55,t0=performance.now();
+  (function f(now){
+    const t=(now-t0)/1000;let s=1,x=0;
+    if(t<IN){const p=t/IN,e=1-Math.pow(1-p,3);x=-(innerWidth/2+110)*(1-e)}            // entra deslizando desde la izquierda
+    else if(t<ZS)s=1+.025*Math.sin((t-IN)*3.4);                                      // respira un instante
+    let pz=0;
+    if(t>=ZS){pz=Math.min(1,(t-ZS)/ZD);s=Math.exp(Math.log(E)*Math.pow(pz,2.3))}    // zoom acelerado
+    svg.style.transform="translateX("+x.toFixed(1)+"px)";
+    z.setAttribute("transform","scale("+s.toFixed(4)+")");
+    rg.setAttribute("transform","rotate("+(300*(1-Math.pow(1-Math.min(t,1.3)/1.3,3))+t*25).toFixed(1)+")");   // los aros giran y se calman
+    pl.style.opacity=t<ZS?1:Math.max(0,1-(t-ZS)/.1);                                  // el "+" se vuelve un hueco
+    nv.style.opacity=1-.65*Math.min(1,pz*2.5);
+    if(pz<1)requestAnimationFrame(f);else sp.remove();
+  })(t0);
+})();
 
 // ---- Barra inferior
 const apply=()=>{drawChips();drawList()};
