@@ -4,7 +4,10 @@
 @font-face{font-family:Poppins;font-weight:700;font-style:normal;font-display:swap;src:url(vendor/fonts/poppins-latin-700-normal.woff2) format("woff2")}
 /* O-PLUS TV · piel exclusiva de la app (la página web NO usa este archivo) */
 html.app,html.app body{background:#050b12}
-html.app body{background:radial-gradient(700px 380px at 100% -5%,rgba(194,52,127,.16),transparent 60%),radial-gradient(600px 380px at -10% 15%,rgba(31,200,214,.13),transparent 60%),#050b12;padding-bottom:calc(74px + env(safe-area-inset-bottom))}
+html.app{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:manipulation}
+html.app body{-webkit-user-select:none;user-select:none}
+html.app input,html.app textarea{-webkit-user-select:text;user-select:text}
+html.app body{background:radial-gradient(700px 380px at 100% -5%,rgba(194,52,127,.16),transparent 60%),radial-gradient(600px 380px at -10% 15%,rgba(31,200,214,.13),transparent 60%),#050b12;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 .app header{background:transparent;border:0;backdrop-filter:none;padding:14px 16px 6px}
 .app .brand{font-size:21px;letter-spacing:.3px}
 .app .brand span{background:linear-gradient(90deg,#fff,#7fe9f2);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -27,9 +30,10 @@ html.app body{background:radial-gradient(700px 380px at 100% -5%,rgba(194,52,127
 .app .chips{border:0;padding:8px 2px 12px}
 .app .chip{background:rgba(255,255,255,.07);border-color:transparent;color:#cfe0ec;border-radius:14px;padding:6px 16px}
 .app .chip[aria-pressed=true]{background:linear-gradient(135deg,var(--cyan),#5fe0ea);color:#04222a}
-.app #list{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0}
+.app #list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0}
+.app #list li{min-width:0}
 .app #list li+li{margin-top:0}.app #list .empty{grid-column:1/-1}
-.app .ch{position:relative;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden;border-radius:20px;background:#0d1c2e;border:1px solid rgba(255,255,255,.06);transition:transform .15s}
+.app .ch{min-width:0;position:relative;flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden;border-radius:20px;background:#0d1c2e;border:1px solid rgba(255,255,255,.06);transition:transform .15s}
 .app .ch:active{transform:scale(.96)}
 .app .ch:hover{background:#0d1c2e}
 .app .ch[aria-current=true]{background:#0d1c2e;border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan),0 10px 28px rgba(31,200,214,.25)}
@@ -37,21 +41,35 @@ html.app body{background:radial-gradient(700px 380px at 100% -5%,rgba(194,52,127
 .app .num{display:none}
 .app .logo{position:relative;flex:none;overflow:hidden;width:100%;height:98px;border-radius:0;font-size:28px}
 .app .logo img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:16px;background:transparent;border-radius:24px}
-.app .nm{padding:10px 12px 12px}
+.app .nm{padding:10px 12px 12px;min-width:0}
 .app .nm b{font-size:14px}
 .app .fav{position:absolute;top:6px;right:6px;z-index:2;width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:50%;background:rgba(0,0,0,.4);font-size:16px}
 .app .fav[aria-pressed=true]{background:rgba(194,52,127,.85);color:#fff}
 /* barra inferior */
-#tabs{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:50;display:flex;padding:6px;border-radius:24px;background:rgba(13,28,46,.88);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.08);box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#tabs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:4000;display:flex;padding:6px;border-radius:24px;background:rgba(13,28,46,.97);border:1px solid rgba(255,255,255,.1);box-shadow:0 12px 40px rgba(0,0,0,.6);transform:translateZ(0)}
 #tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;background:none;border:0;border-radius:18px;color:#8da5ba;font:500 11px Poppins,sans-serif;transition:.2s}
 #tabs button.on{color:#fff;background:linear-gradient(135deg,rgba(31,200,214,.28),rgba(194,52,127,.28))}
 #tabs svg,#appfs svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-body.fs-on #tabs{display:none}
-.app #toast{bottom:calc(96px + env(safe-area-inset-bottom))}
+body.fs-on #tabs{display:none!important}
+.app #toast{bottom:calc(100px + env(safe-area-inset-bottom));z-index:4100}
 /* pantalla completa propia */
-#appfs{position:absolute;top:10px;right:10px;z-index:6;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;backdrop-filter:blur(6px)}
-.screen.appfs{position:fixed!important;inset:0;z-index:5000;width:100vw!important;height:100vh!important;margin:0!important;border-radius:0!important;aspect-ratio:auto!important}
-.screen.appfs .plyr,.screen.appfs video{border-radius:0!important;height:100%}
+html.fs-on,html.fs-on body{overflow:hidden;touch-action:none}
+#fsph{flex:none}
+.screen.appfs{position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important;max-width:none!important;max-height:none!important;margin:0!important;border:0!important;border-radius:0!important;aspect-ratio:auto!important;box-shadow:none!important;transform:none!important;z-index:5000;background:#000}
+.screen.appfs .plyr,.screen.appfs .plyr__video-wrapper{position:absolute!important;top:0;left:0;right:0;bottom:0;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border-radius:0!important;aspect-ratio:auto!important}
+.screen.appfs video{position:absolute!important;top:0;left:0;width:100%!important;height:100%!important;border-radius:0!important;object-fit:contain;background:#000}
+#appfs{position:absolute;top:10px;right:10px;z-index:12;width:42px;height:42px;display:grid;place-items:center;padding:0;border-radius:50%;border:0;background:rgba(0,0,0,.5);color:#fff;transition:opacity .25s}
+.screen.appfs #appfs{top:max(12px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));width:46px;height:46px}
+#fsbar{display:none;position:absolute;z-index:12;top:0;left:0;right:0;align-items:center;gap:8px;padding:max(12px,env(safe-area-inset-top)) 76px 26px max(14px,env(safe-area-inset-left));background:linear-gradient(rgba(0,0,0,.7),transparent);color:#fff;transition:opacity .25s}
+.screen.appfs #fsbar{display:flex}
+#fsbar button{flex:none;width:44px;height:44px;display:grid;place-items:center;padding:0;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff}
+#fsbar svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#fstitle{flex:1;min-width:0;font:600 16px/1.2 Poppins,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 6px #000}
+.screen.appfs.idle #fsbar,.screen.appfs.idle #appfs{opacity:0;pointer-events:none}
+.screen.appfs.idle .plyr__controls{opacity:0;pointer-events:none}
+/* cortina negra mientras la pantalla gira (evita ver el video "ampliado" a medio giro) */
+body::after{content:"";position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:8000;opacity:0;pointer-events:none;transition:opacity .18s}
+html.fsw body::after{opacity:1;pointer-events:all}
 /* intro: el logo entra, hace zoom y el "+" se abre para revelar la app */
 #splash{position:fixed;inset:0;z-index:9000;overflow:hidden;pointer-events:all}
 #splash svg{position:absolute;left:50%;top:50%;width:200px;height:200px;margin:-100px 0 0 -100px;overflow:visible}
